@@ -1,0 +1,21 @@
+# Local secrets and Python env
+.env
+.env.*
+!.env.example
+.venv/
+__pycache__/
+.pytest_cache/
+*.pyc
+# Frontend
+node_modules/
+dist/
+*.tsbuildinfo
+.DS_Store
+
+# Local secrets and private deployment configurations
+*.pem
+*.pfx
+*.key
+*.secret
+.vscode/
+.idea/
