@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Invisible Defender | AI Commentary v0.9.0</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#07161d;color:#e6f1eb;font:14px/1.48 system-ui,-apple-system,Segoe UI,Arial,sans-serif}
+.wrap{max-width:1280px;margin:auto;padding:0 22px}nav{padding:18px 0;border-bottom:1px solid #234349;display:flex;justify-content:space-between;align-items:center;gap:8px}.brand{font-weight:850;letter-spacing:.09em}.brand b{color:#a8ed9d}.tag{background:#163b31;color:#bceaa5;border:1px solid #316645;padding:7px 11px;border-radius:25px;font-size:10px;letter-spacing:.07em}
+header{padding:34px 0 21px}.kicker{color:#9deaaf;font-size:10px;font-weight:800;letter-spacing:.15em}h1{margin:9px 0;font-size:clamp(28px,4vw,42px);line-height:1.15;letter-spacing:-.04em}h1 em{color:#91aaab;font-style:normal}h2{font-size:19px;letter-spacing:-.022em;margin:9px 0 7px}.muted{color:#9bb4b2;font-size:12px}
+.toolbar{display:flex;align-items:end;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:17px}label{display:block;color:#a6e2aa;font-size:10px;letter-spacing:.12em;font-weight:800;margin-bottom:7px}select,button{font:inherit;color:inherit}select{background:#14323b;border:1px solid #35575c;padding:10px 13px;border-radius:8px;min-width:min(88vw,420px)}button{cursor:pointer} .seg{display:flex;gap:5px}.seg button{border:1px solid #345159;background:#11303a;border-radius:7px;padding:10px 13px;color:#c5d5d3}.seg button.active{background:#31553f;border-color:#a9e98e;color:#e8fcd9}
+.grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(320px,1fr);gap:15px}.panel{padding:20px;border:1px solid #26464e;background:#0d262e;border-radius:13px;min-width:0}.header-row{display:flex;justify-content:space-between;align-items:center;gap:8px}.pill{background:#164537;color:#a9ffc0;padding:6px 9px;border-radius:5px;font-size:10px;font-weight:750}.meta{background:#17413b;color:#c0e1c8;display:flex;justify-content:space-between;gap:8px;padding:8px 10px;font-size:10px}
+#pitch{width:100%;display:block;aspect-ratio:105/68;border-radius:0 0 8px 8px;background:#19533f}.legend{display:flex;gap:14px;flex-wrap:wrap;margin:11px 0;color:#93b6ae;font-size:11px}.dot{width:9px;height:9px;display:inline-block;border-radius:50%;background:#74c6ff;margin-right:4px}.dot.d{background:#ff8f71}
+.timeline{background:#0e3437;padding:10px 12px;border:1px solid #2b5652;border-radius:8px;margin-top:11px}.timeline-head{display:flex;justify-content:space-between;align-items:center;gap:8px}.timeline-head button{border:1px solid #80bb80;border-radius:5px;background:#245643;padding:5px 12px}.timeline input{width:100%;accent-color:#b4f194}.fine{color:#9ebdb0;font-size:10px}
+.scorecard{background:#164538;border:1px solid #3b795a;border-radius:8px;padding:15px;margin:13px 0}.number{font-size:51px;font-weight:780;letter-spacing:-.04em}.delta{float:right;background:#2c6546;border-radius:6px;color:#dbf6bc;padding:7px;font-size:11px;margin-top:19px}.scorecard small{display:block;color:#acd4bf}.options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:9px}.options button{position:relative;min-height:65px;text-align:left;border:1px solid #35545b;background:#14353e;border-radius:6px;padding:9px;display:flex;flex-direction:column;justify-content:space-between;font-size:11px}.options button strong{font-size:18px}.options button.active{background:#286044;border-color:#b3ec97}.options button.best:after{content:'LOWEST';position:absolute;right:6px;top:5px;font-size:8px;color:#c4ef9c}.summary{display:flex;justify-content:space-between;border-top:1px solid #345258;margin-top:17px;padding-top:12px;color:#b2c7be;font-size:12px}.summary strong{display:block;color:#eaf8f0;margin-top:4px}.explain{background:#112f32;border-left:3px solid #9fe69e;padding:12px 14px;margin-top:13px;font-size:12px;color:#d7e6e1}
+.details{margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:14px}.lane{padding:12px 14px;border-radius:8px;background:#14323a;border:1px solid #31545a;margin-top:9px}.lane-title{display:flex;justify-content:space-between;gap:8px}.small{font-size:11px;color:#b6cbc2}.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}.stats div{background:#0d2730;border-radius:6px;padding:9px}.stats b{display:block;font-size:16px;color:#e5f3e5}.footnote{font-size:11px;color:#9cb5af;line-height:1.65}#defender{min-width:210px}.observed-btn{width:100%;border-radius:7px;border:1px solid #77b6ac;background:#163b3e;padding:12px;text-align:left;display:flex;justify-content:space-between;align-items:center;margin-top:9px;margin-bottom:8px;font-weight:750}.observed-btn.active{border-color:#c5f49e;background:#285744}.impact-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:15px}.impact-grid div{background:#102f34;border:1px solid #345458;padding:12px;border-radius:8px}.impact-grid span{color:#9be3af;font-size:10px;letter-spacing:.08em;font-weight:800;display:block}.impact-grid b{font-size:25px;display:block;margin:4px 0}.impact-grid small{font-size:10px;color:#abc1b7}
+/* High-priority phase control; intentionally separate from the small Broadcast/Analyst toggle. */
+.decision-moment{border:1px solid #436e6b;background:#112d33;border-radius:15px;padding:18px 20px;margin:7px 0 19px;box-shadow:0 8px 30px rgba(0,0,0,.18)}
+.moment-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.moment-hint{color:#bbd0c7;font-size:12px}
+.moment-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.moment-button{display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:6px;min-height:106px;border:2px solid #385760;background:#102731;color:#c2d4d2;border-radius:11px;padding:14px 19px;transition:border-color .15s,background .15s,transform .15s}
+.moment-button:hover{border-color:#a6ef9d;transform:translateY(-1px)}
+.moment-button:focus-visible{outline:3px solid #f2dc96;outline-offset:3px}
+.moment-button.active{background:linear-gradient(120deg,#255d48,#1b5045);border-color:#b7f5a1;box-shadow:inset 0 0 0 1px rgba(183,245,161,.15)}
+.moment-button .moment-step{font-size:10px;letter-spacing:.13em;font-weight:850;color:#b5eeac}
+.moment-button:not(.active) .moment-step{color:#97b6b0}
+.moment-button strong{font-size:clamp(18px,2.2vw,26px);line-height:1.12;letter-spacing:-.02em;color:#f2ffe8}
+.moment-caption{font-size:12px;color:#c1d7c9}
+.moment-message{margin-top:12px;border-left:3px solid #b7f5a1;color:#d4e9db;padding:5px 11px;font-size:12px}
+.offside-diagnostic{margin-top:13px;border:1px solid #705b7a;background:#2c293b;border-radius:9px;padding:12px 14px;color:#efdbf5;line-height:1.55;font-size:12px}
+.offside-diagnostic strong{display:block;font-size:13px;color:#fbecff;margin-bottom:3px}
+.offside-diagnostic[hidden]{display:none}
+.selectable-defender{cursor:pointer}.selectable-defender:focus .player-click-ring,.selectable-defender:hover .player-click-ring{stroke:#e9ff9a;stroke-width:.65}.alert{display:none;background:#542828;color:#ffd0c8;padding:15px;border-radius:9px;margin:8px 0}
+@media(max-width:950px){.grid,.details{grid-template-columns:1fr}}@media(max-width:600px){.moment-options{grid-template-columns:1fr}.moment-button{min-height:84px}.decision-moment{padding:12px}.wrap{padding:0 10px}.panel{padding:12px}.tag{font-size:8px}.options button{font-size:10px;padding:7px}.options button strong{font-size:16px}.stats{gap:4px}.stats div{padding:6px}}
+
+/* Optional cloud-agent commentary, with honest offline status. */
+.ai-panel{margin:16px 0;padding:16px;background:#15363b;border:1px solid #46736d;border-radius:10px}
+.ai-panel h3{font-size:16px;margin:0 0 7px}.ai-panel button{background:#b5eea0;color:#0b2823;border:0;padding:11px 16px;border-radius:7px;font-weight:800;margin-top:10px}
+.ai-panel button:disabled{opacity:.5;cursor:wait}.ai-panel .ai-hint{color:#c1d5cf;font-size:11px;line-height:1.55}
+.ai-panel .ai-text{color:#f3faeb;font-size:14px;line-height:1.6;white-space:pre-wrap;margin-top:12px}
+.ai-evidence{padding:0 0 0 16px;margin:10px 0;color:#b7d3c8;font-size:11px}
+/* Grounded explanation, kept visually adjacent to the decision rather than only below the pitch. */
+.why-now{border:1px solid #4b7762;background:linear-gradient(125deg,#153c34,#122d32);border-radius:9px;padding:14px;margin:14px 0 3px}
+.why-now strong{display:block;font-size:15px;margin:5px 0;line-height:1.42;color:#eaffdd}
+.why-now .sign{font-size:11px;color:#b7eac5}
+.explain-tag{display:inline-block;background:#264442;border:1px solid #426861;color:#cde8c7;border-radius:100px;padding:3px 10px;font-size:10px;margin-bottom:10px}
+#explanation{color:#e1f4e6;font-size:14px;line-height:1.72;margin-top:6px}
+.explanation-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:12px 0}
+.explanation-steps div{border:1px solid #315754;background:#132f35;border-radius:8px;padding:10px}
+.explanation-steps b{display:block;font-size:19px;margin-top:2px}
+.explanation-steps small{display:block;color:#b2cbc2;font-size:10px}
+.evidence-table{margin-top:12px;border-top:1px solid #355458}
+.evidence-row{padding:10px 0;border-bottom:1px solid #2c494f;display:flex;justify-content:space-between;align-items:start;gap:12px}
+.evidence-row span{color:#cbded5;font-size:12px}.evidence-row small{display:block;font-size:10px;color:#8faea6;margin-top:3px}
+.evidence-row b{font-size:13px;white-space:nowrap}.positive{color:#a5e9ab}.negative{color:#ffc193}.neutral{color:#d5e5db}
+.explain-foot{font-size:11px;color:#a9beba;line-height:1.65;margin-top:12px}
+@media(max-width:600px){.explanation-steps{grid-template-columns:1fr 1fr 1fr}.explanation-steps b{font-size:16px}}
+</style></head>
+<body><div class="wrap">
+<nav><div class="brand">⬡ THE INVISIBLE <b>DEFENDER</b></div><div class="tag">GROUNDED AI COMMENTARY · v0.9</div><a href="/3d" style="padding:10px 13px;color:#d6f8c5;border:1px solid #5d957c;border-radius:9px;font-size:12px;text-decoration:none;font-weight:800">◈ OPEN 3D DEFENDER POV ↗</a></nav>
+<header><div class="kicker">COUNTERFACTUAL DEFENSIVE INTELLIGENCE LAB</div><h1>Defensive positioning <em>is a decision in time.</em></h1><p class="muted">Movement alternatives, teammates, time-aware passing and offside positioning — compared at the moment the ball is played.</p></header>
+<div class="toolbar"><div><label for="scene">MATCH SITUATION</label><select id="scene"></select></div><div><label for="defender">FOCUSED DEFENDER</label><select id="defender" aria-label="Choose a defender"></select><div class="fine">Or click an orange outfield player on the pitch</div></div><div><label>INTERPRETATION</label><div class="seg"><button id="fan" class="active">Broadcast</button><button id="analyst">Analyst</button></div></div></div>
+<div class="decision-moment" role="group" aria-label="Choose the moment of defensive analysis">
+  <div class="moment-head"><span class="kicker">SELECT THE DECISION MOMENT</span><span class="moment-hint">These are two different questions — choose when the defender must decide</span></div>
+  <div class="moment-options">
+    <button type="button" id="pre" class="moment-button active" aria-pressed="true"><span class="moment-step">01 · ANTICIPATION</span><strong>BEFORE THE PASS</strong><span class="moment-caption">Positioning, cover shadows, offside line</span></button>
+    <button type="button" id="post" class="moment-button" aria-pressed="false"><span class="moment-step">02 · REACTION</span><strong>AFTER THE PASS</strong><span class="moment-caption">Committed pass, interception, recovery</span></button>
+  </div>
+  <div id="phase-desc" class="moment-message">Before the ball is played: which realistic movement limits the attack?</div><div id="timebudget" class="fine" style="padding:10px 11px 0;line-height:1.5" role="note"></div>
+</div>
+<div id="error" class="alert"></div>
+<div class="grid"><section class="panel"><div class="header-row"><div><div class="kicker">01 / TIME-AWARE TACTICAL VIEW</div><h2 id="title">Loading...</h2><p id="subtitle" class="muted"></p></div><span id="phasepill" class="pill">PRE-PASS</span></div>
+<div class="meta"><span id="minute">FRAME</span><span id="attackdir">ATTACK → · DEFENDED GOAL →</span></div><svg id="pitch" viewBox="0 0 105 68" role="img" aria-label="Tactical football pitch showing coverage and ball trajectory"></svg>
+<div class="timeline"><div class="timeline-head"><label for="scrub"><span id="timeline-title">MOVEMENT BEFORE THE PASS</span> · <span id="clock">0.00s</span></label><button id="play">▶ Play</button></div><input id="scrub" type="range" min="0" max="2.5" step="0.025" value="0"/><div class="fine" id="eventdiag"></div></div>
+<div class="legend"><span>⇢ White tick = body facing at decision instant</span><span><i class="dot"></i>Attack</span><span><i class="dot d"></i>Defense</span><span>┄ potential pass</span><span>● simulated ball</span><span style="color:#efbdf9">┄ OFFSIDE reference at kick</span></div>
+<div class="explain" id="contact">Pre-pass: compare possible passing decisions before the ball is kicked.</div></section>
+<section class="panel"><div class="kicker">02 / DECISION EXPLORER</div><h2 id="question">Which position best protects the team?</h2><p class="muted" id="description"></p>
+<div class="scorecard"><label id="score-title">TEAM DEFENSIVE DECISION INDEX</label><span class="number" id="score">—</span><span class="delta" id="delta">—</span><small>Smaller is better · pass danger + disclosed role penalty, not xG</small></div>
+<div id="reason-preview" class="why-now" role="status" aria-live="polite">The reason for this score will appear here.</div><label>9 BODY-RELATIVE MOVEMENTS · TOP = FACING</label><button id="observed-path" class="observed-btn" type="button">▶ Authored movement <strong id="observed-score">—</strong></button><div class="options" id="options"></div><div class="impact-grid"><div><span>DEFENSIVE IMPACT</span><b id="impact">—</b><small>Hold − authored path</small></div><div><span>DECISION GAP</span><b id="decision-gap">—</b><small>Authored path − best tested path</small></div></div><div id="relevance" class="fine"></div><div id="offside-diagnostic" class="offside-diagnostic" role="status"></div><div class="summary"><div>Selected<strong id="selected">—</strong></div><div>Lowest index<strong id="best">—</strong></div></div><p class="footnote" id="modelinfo"></p></section></div>
+<div class="details"><section class="panel"><div class="kicker">03 / WHO COVERS WHICH PASS?</div><h2 id="lane-heading">Team coverage and individual contribution</h2><div id="lane-rows"></div></section>
+<section class="panel"><div class="kicker">04 / EXPLAIN THE DECISION</div><h2 id="explain-title">What is this telling us?</h2><div class="explain-tag">DETERMINISTIC COMMENTARY · GROUNDED IN MODEL OUTPUT</div><p id="explanation"></p>
+<div class="ai-panel" aria-live="polite"><h3>Microsoft AI Tactical Commentary</h3><div id="ai-provider" class="ai-hint">Checking AI service configuration…</div><button type="button" id="ai-generate">Generate tactical commentary</button><p id="ai-result" class="ai-text"></p><ul id="ai-evidence" class="ai-evidence"></ul></div><div class="explanation-steps" id="explanation-steps"></div><h3 style="font-size:14px;margin:20px 0 4px">Why did the index change?</h3><div class="fine">Contribution versus holding position. Positive values reduce the attack index; negative values increase it.</div><div id="evidence-rows" class="evidence-table"></div><div id="compare" class="lane"></div><p id="explain-limits" class="explain-foot"></p><p class="footnote">All other players follow scripted constant-velocity motion; low straight passes target predicted receiver positions. Tactical marking assignments are fictional. Coverage and action-choice values are *indices*, not calibrated probabilities. Offside is point-based, not a VAR/referee decision; an offside position alone is not an offence. No football club video or real tracking data is used.</p></section></div>
+<p class="footnote" style="padding:16px 0 24px">Research-inspired independent prototype. Optional Microsoft Foundry Agent Framework integration; offline mode uses deterministic explanations. Sources and limitations: <a style="color:#bdeab0" href="https://www.hudl.com/blog/hpi-25-lorenzo-cascioli-allen-wang">cover shadows</a>, <a style="color:#bdeab0" href="https://arxiv.org/abs/2512.10355">DEFCON</a>, <a style="color:#bdeab0" href="https://link.springer.com/article/10.1007/s10618-022-00827-2">pass availability</a>.</p>
+</div>
+<script>
+let data=null,phase='pre',view='fan',selected='observed',clock=0,timer=null,focusedDefender=null,scenarios=[];let loadGeneration=0;let aiReply=null,aiKey='';
+const $=id=>document.getElementById(id), fmt=x=>Number(x).toFixed(3), pc=x=>Number(x).toFixed(3), safe=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const player=id=>data.scene.players.find(p=>p.id===id), actual=()=>data[phase+'_pass'], option=()=>selected==='observed'?actual().observed_option:(actual().options.find(o=>o.action===selected)||actual().observed_option);
+function posAt(trace,t){if(t<=trace[0].t)return trace[0];for(let i=1;i<trace.length;i++){if(t<=trace[i].t){let a=trace[i-1],b=trace[i],u=(t-a.t)/(b.t-a.t);return {x:a.x+u*(b.x-a.x),y:a.y+u*(b.y-a.y)}}}return trace[trace.length-1]}
+function currentPosition(p,o,t){return p.id===data.scene.defender_id?posAt(o.trajectory,t):posAt(o.player_trajectories[p.id],t)}
+function stop(){if(timer)clearInterval(timer);timer=null;$('play').textContent='▶ Play'}
+function setMode(p){stop();phase=p;clock=0;selected=data?.actual_action||'hold';for(const [id,active] of [['pre',p==='pre'],['post',p==='post']]){$(id).classList.toggle('active',active);$(id).setAttribute('aria-pressed',String(active))}render()}
+function setView(v){view=v;$('fan').classList.toggle('active',v==='fan');$('analyst').classList.toggle('active',v==='analyst');render()}
+function render(){if(!data)return;
+ const r=actual(),o=option(),scene=data.scene,launch=data.assumptions.pass_launch_delay_s,pre=phase==='pre',observed=o.observed_pass;
+ const duration=pre?launch:launch+observed.flight_time_s+0.3;
+ clock=Math.max(0,Math.min(clock,duration));$('scrub').max=duration;$('scrub').value=clock;$('clock').textContent=clock.toFixed(2)+'s';
+ $('title').textContent=scene.title;$('subtitle').textContent=scene.subtitle;$('minute').textContent='● '+scene.minute;
+ $('attackdir').textContent=scene.attack_direction==='right'?'ATTACK → · DEFENDING GOAL →':'ATTACK ← · DEFENDING GOAL ←';
+ $('phase-desc').textContent=pre?'BEFORE: evaluate cover shadows and offside status at the moment of the kick.':'AFTER: the target and offside status are frozen — now evaluate the reaction and interception.';$('phasepill').textContent=pre?'PRE-PASS POSITIONING':'POST-PASS REACTION';$('timeline-title').textContent=pre?'MOVEMENT BEFORE PASS LAUNCH':'FIXED-TARGET PASS REPLAY';
+ $('timebudget').textContent=pre?`DECISION TIME · ${launch.toFixed(2)}s until the pass; ${data.assumptions.defender_reaction_delay_s.toFixed(2)}s reaction delay; maximum straight-line travel before the kick ${(Math.max(0,launch-data.assumptions.defender_reaction_delay_s)*data.assumptions.defender_max_speed_mps).toFixed(2)}m. This is a fixed scenario timeline, not an adjustable match prediction.`:`REACTION TIME · The pass has already been played. The offside snapshot and target are fixed; reactions start from the same recorded synthetic pose.`;
+ $('question').textContent=pre?'Which position limits the attack?':'How should the defender react now?';
+ $('description').textContent=pre?'The passer may choose either target or recycle the ball. Every option is evaluated with the same launch deadline.':'The pass has already been chosen. All possible reactions start from the same pose at ball release.';
+ $('score-title').textContent=pre?'TEAM DEFENSIVE DECISION INDEX':'CONDITIONAL THREAT FOR OBSERVED PASS';
+ $('score').textContent=fmt(o.score);let reduction=r.baseline_score-o.score;$('delta').textContent=(reduction>=0?'−':'+')+fmt(Math.abs(reduction))+' vs hold';
+ $('selected').textContent=o.label;$('best').textContent=r.optimal_action==='observed'?'Authored movement':r.options.find(x=>x.action===r.optimal_action).label;
+ $('observed-score').textContent=fmt(r.observed_option.score);$('observed-path').classList.toggle('active',selected==='observed');
+ $('impact').textContent=(r.defensive_impact>=0?'+':'')+fmt(r.defensive_impact);$('decision-gap').textContent=fmt(r.decision_gap);$('relevance').textContent=r.relevance==='low_model_influence'?'LOW MODEL INFLUENCE — no meaningful decision recommendation for this defender.':'Exploratory model comparison, not an objective player grade.';
+ const diag=data.offside_opportunity,diagBox=$('offside-diagnostic');
+ diagBox.hidden=!pre||!diag;
+ if(pre&&diag){
+   const receiver=player(diag.target_id),defender=player(diag.selected_defender_id),who='#'+defender.number, target='#'+receiver.number;
+   let message='';
+   if(diag.status==='insufficient_time_to_advance')message=`${who} can potentially set ${target} offside by stepping forward, but not before this kick. Required: ${diag.minimum_forward_displacement_at_kick_m.toFixed(2)}m; feasible in ${diag.pass_launch_time_s.toFixed(2)}s with reaction delay: ${diag.tested_forward_displacement_by_kick_m.toFixed(2)}m. The model correctly gives no offside-trap credit for this attempt.`;
+   else if(diag.status==='offside_trap_feasible_in_tested_move')message=`${who}'s tested forward step changes ${target} from onside to an offside position at kick. This only becomes an offence if the attacker is involved in active play.`;
+   else if(diag.status==='other_defenders_keep_target_onside')message=`${who} cannot independently set ${target} offside in this scene: two or more teammates remain level with or deeper than the attacker.`;
+   else if(diag.status==='already_offside')message=`${target} is already in an offside position if ${who} holds. The model does not award extra credit for a redundant offside trap.`;
+   else if(diag.status==='exempt_restart')message='No offside offence from a direct goal kick, throw-in or corner kick.';
+   else message=`${target} cannot be offside at this kick under the modelled ball and halfway-line positions.`;
+   diagBox.innerHTML=`<strong>OFFSIDE DECISION CHECK · ${safe(who)} vs ${safe(target)}</strong>${safe(message)}`;
+ }
+ const localOrder=['forward-up','forward','forward-down','up','hold','down','backward-up','backward','backward-down'];
+ $('options').innerHTML=localOrder.map(action=>r.options.find(x=>x.action===action)).filter(Boolean).map(x=>`<button class="${selected===x.action?'active ':''}${x.action===r.optimal_action?'best':''}" data-action="${safe(x.action)}"><span>${safe(x.label)}</span><strong>${fmt(x.score)}</strong></button>`).join('');
+ $('options').querySelectorAll('button').forEach(btn=>btn.onclick=()=>{stop();selected=btn.dataset.action;clock=0;render()});
+ $('modelinfo').textContent=`Pass threat ${fmt(o.pass_threat_index)} + assignment release penalty ${fmt(o.role_release_penalty)}. OFFSIDE line at first touch x=${o.offside.offside_line_x.toFixed(2)}m. `+(pre?'Only eligible passing options are considered.':'Offside is fixed at release; a later defensive reaction cannot change it.');
+ $('eventdiag').textContent=`Ball release: t=${launch.toFixed(2)}s · OFFSIDE line at kick: x=${o.offside.offside_line_x.toFixed(2)}m · 2nd-last defender x=${o.offside.second_last_defender_x.toFixed(2)}m`; 
+ const holder=player(scene.ball_holder_id), defender=player(scene.defender_id), defpos=posAt(o.trajectory,clock), holderPos=currentPosition(holder,o,clock);
+ const line=o.offside.offside_line_x; const statuses=o.offside.target_statuses;
+ const bg=`<defs><pattern id="grass" width="17.5" height="68" patternUnits="userSpaceOnUse"><rect width="17.5" height="68" fill="#19503f"/><rect width="8.75" height="68" fill="#1b5946"/></pattern><marker id="arrow" orient="auto" markerWidth="2" markerHeight="2" refX="1.5" refY="1"><path d="M0 0 L2 1 L0 2Z" fill="#d0ff90"/></marker></defs><rect width="105" height="68" fill="url(#grass)"/><g stroke="#d6ffe3" stroke-width=".28" opacity=".38" fill="none"><rect x="1.4" y="1.4" width="102.2" height="65.2"/><path d="M52.5 1.4V66.6 M86.5 13.8H103.6V54.2H86.5 M97.5 24.8H103.6V43.2H97.5"/><circle cx="52.5" cy="34" r="9.15"/></g>`;
+ const offsideGraphic=`<line x1="${line}" y1="1.4" x2="${line}" y2="66.6" stroke="#f2b7fa" stroke-width=".52" stroke-dasharray="2 1.5"/><rect x="${Math.max(2,Math.min(line-10,87))}" y="3" width="15" height="4" rx="1" fill="#3e2146"/><text x="${Math.max(2,Math.min(line-10,87))+7.5}" y="5.8" text-anchor="middle" font-size="2.05" fill="#fff">OFFSIDE</text>`;
+ let passes='';for(const lane of o.passes){if(!pre&&lane.target_id!==scene.observed_pass_target_id)continue;const t=lane.pass_end;const from=lane.pass_start;const prob=pre?lane.pass_choice_index:lane.team_coverage_index;passes+=`<line x1="${from.x}" y1="${from.y}" x2="${t.x}" y2="${t.y}" stroke="${lane.offside_position?'#f5a3d4':lane.marginal_coverage_index>.15?'#c8f5a5':'#f9c37f'}" stroke-width=".53" stroke-dasharray="1.5 1.2"/><g transform="translate(${(from.x+t.x)/2},${(from.y+t.y)/2-3.8})"><rect x="-6" y="-2.5" width="12" height="4.4" rx="1.1" fill="#062923"/><text y=".5" text-anchor="middle" font-size="2.25" fill="#fff">${lane.offside_position?'OFF':prob.toFixed(2)}</text></g>`;}
+ let players='';for(const p of scene.players){const moving=p.id===scene.defender_id,pt=currentPosition(p,o,clock);const color=p.team==='attack'?'#77c7ff':'#ff937b';if(statuses[p.id]?.offside_position) players+=`<circle cx="${pt.x}" cy="${pt.y}" r="3.2" stroke="#f9b2db" stroke-width=".6" fill="none" stroke-dasharray="1 .65"/>`;players+=moving?`<circle cx="${p.x}" cy="${p.y}" r="2.5" stroke="#baffad" stroke-width=".35" stroke-dasharray=".6 .6" fill="none"/><line x1="${p.x}" y1="${p.y}" x2="${pt.x}" y2="${pt.y}" stroke="#c9f4a1" stroke-width=".65" marker-end="url(#arrow)"/>`:'';const clickable=p.team==='defense'&&!p.is_goalkeeper;
+ const facing=p.id===scene.defender_id?data.decision_facing_deg[phase]:p.body_facing_deg;
+ const radians=facing*Math.PI/180,fx=Math.cos(radians),fy=Math.sin(radians);
+ const nose=`<line x1="${(pt.x+fx*1.2).toFixed(3)}" y1="${(pt.y+fy*1.2).toFixed(3)}" x2="${(pt.x+fx*3.25).toFixed(3)}" y2="${(pt.y+fy*3.25).toFixed(3)}" stroke="${moving?'#d8ffa4':'#ecf7e4'}" stroke-width="${moving?.9:.55}" stroke-linecap="round" pointer-events="none"/>`;
+
+ players+=`<g ${clickable?`data-defender="${safe(p.id)}" role="button" tabindex="0" aria-label="Select defender number ${p.number}: ${safe(p.name)}" class="selectable-defender"`:''}><circle class="player-click-ring" cx="${pt.x}" cy="${pt.y}" r="${moving?3.8:3.1}" fill="transparent" stroke="transparent" stroke-width=".25"/><circle cx="${pt.x}" cy="${pt.y}" r="${moving?2.3:1.7}" fill="${color}" stroke="${moving?'#caff9c':'#fff'}" stroke-width="${moving?.68:.3}"/><text x="${pt.x}" y="${pt.y+.6}" text-anchor="middle" font-size="2" font-weight="bold" fill="#08242b" pointer-events="none">${p.number}</text>${nose}</g>`;}
+ // Dashed tactical assignment connectors: not measured as pass interceptions.
+ for(const p of scene.players.filter(x=>x.team==='defense'&&x.marking_target_id)){
+   const left=currentPosition(p,o,clock), right=currentPosition(player(p.marking_target_id),o,clock);
+   players+=`<line x1="${left.x}" y1="${left.y}" x2="${right.x}" y2="${right.y}" stroke="#fff7a2" opacity=".23" stroke-dasharray="1 1" stroke-width=".32"/>`;
+ }
+ let ball='';let contact=false;
+ if(!pre&&clock>=launch){let u=Math.max(0,Math.min(1,(clock-launch)/observed.flight_time_s));if(observed.contact_time_s!==null && clock>=observed.contact_time_s){u=observed.contact_fraction;contact=true;}const from=observed.pass_start,to=observed.pass_end,bx=from.x+u*(to.x-from.x),by=from.y+u*(to.y-from.y);ball=`<circle cx="${bx}" cy="${by}" r="1.05" fill="#fff" stroke="#052b28" stroke-width=".3"/>`;}else{ball=`<circle cx="${holderPos.x}" cy="${holderPos.y}" r="1.05" fill="#fff"/>`}
+ $('pitch').innerHTML=bg+offsideGraphic+passes+players+ball;
+ $('pitch').querySelectorAll('[data-defender]').forEach(el=>{el.onclick=()=>chooseDefender(el.dataset.defender);el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();chooseDefender(el.dataset.defender)}}});
+ const illegal=observed.offside_position;
+ $('contact').textContent=pre?'PRE-PASS: eligibility at the future kick is evaluated for every movement; a receiver in an offside position is excluded from successful direct passes if involved.':contact?`GEOMETRIC CONTACT IN THIS IDEALIZED REPLAY at ${observed.contact_time_s.toFixed(2)}s by defender ${observed.contact_defender_id}. The ball stops here; the threat index remains a soft estimate across uncertain outcomes.`:illegal?`Receiver ${observed.target_name} was in an OFFSIDE POSITION at kick. If they become involved, this pass is excluded from legal direct attacking outcomes. The physical replay is illustrative.`:`Fixed pass to ${player(scene.observed_pass_target_id).name}. No geometric ball contact in this simulated movement (closest gap: ${observed.tracked_min_gap_m.toFixed(2)}m). A nonzero coverage index does NOT mean a tackle took place.`;
+ $('lane-rows').innerHTML=o.passes.map(l=>`<div class="lane"><div class="lane-title"><strong>${safe(l.target_name)} ${l.offside_position?'· OFFSIDE POSITION AT KICK': '· ONSIDE AT KICK'} ${!pre&&l.target_id===scene.observed_pass_target_id?'· COMMITTED PASS':''}</strong><span class="small">${pre?'Choice index: '+pc(l.pass_choice_index):l.target_id===scene.observed_pass_target_id?'Fixed receiver':'Not evaluated for post-pass decision'}</span></div><div class="stats"><div class="small">Teammates already cover<b>${pc(l.other_defenders_coverage_index)}</b></div><div class="small">Tracked adds beyond teammates<b>${pc(l.marginal_coverage_index)}</b></div><div class="small">Team coverage index<b>${pc(l.team_coverage_index)}</b></div></div>${view==='analyst'?`<div class="small" style="margin-top:8px">Conditional threat: ${fmt(l.conditional_threat)} · tracked gap: ${l.tracked_min_gap_m.toFixed(2)}m · team pass-completion index: ${pc(l.completion_index)}</div>`:''}</div>`).join('');
+ const baseline=r.baseline_score,observedScore=r.actual_score,best=r.optimal_score;
+ const evidence=r.explanations?.[selected] || r.explanations?.observed;
+ $('explain-title').textContent=view==='fan'?'Why did this movement matter?':'Verified model-component audit';
+ const contextKey=[scene.id,focusedDefender,phase,view,selected].join('|');
+ $('ai-result').textContent=aiKey===contextKey&&aiReply?aiReply.commentary:'';
+ $('ai-evidence').innerHTML=aiKey===contextKey&&aiReply?aiReply.evidence.map(e=>`<li><b>${safe(e.id)}</b> ${safe(e.label)}: ${safe(e.fact)}</li>`).join(''):'';
+ if(aiKey!==contextKey)$('ai-generate').disabled=false;
+
+ if(evidence){
+  const primary=evidence.components.find(c=>c.key===evidence.primary_reason_key);
+  const modifier=evidence.reduction_vs_hold>0.002?'lower':evidence.reduction_vs_hold<-.002?'higher':'almost unchanged';
+  $('reason-preview').innerHTML=`<span class="kicker">WHY THIS SCORE?</span><strong>${safe(o.label)} makes the attack index ${modifier} than holding position.</strong><span class="sign">${primary?safe(primary.label)+': '+(primary.reduction_vs_hold>=0?'−':'+')+fmt(Math.abs(primary.reduction_vs_hold))+' index units in the attack score':'No dominant contributor identified'} · Not xG or goal probability</span>`;
+  $('explanation').textContent=evidence.commentary[view];
+  $('explanation-steps').innerHTML=`<div><small>HOLD INDEX</small><b>${fmt(evidence.hold_score)}</b></div><div><small>SELECTED INDEX</small><b>${fmt(evidence.selected_score)}</b></div><div><small>REDUCTION</small><b class="${evidence.reduction_vs_hold>0?'positive':evidence.reduction_vs_hold<0?'negative':'neutral'}">${evidence.reduction_vs_hold>0?'+':''}${fmt(evidence.reduction_vs_hold)}</b></div>`;
+  $('evidence-rows').innerHTML=evidence.components.map(c=>`<div class="evidence-row"><span>${safe(c.label)}<small>Hold ${fmt(c.hold_value)} → selected ${fmt(c.value)}</small></span><b class="${c.reduction_vs_hold>0.001?'positive':c.reduction_vs_hold<-.001?'negative':'neutral'}">${c.reduction_vs_hold>=0?'+':''}${fmt(c.reduction_vs_hold)}</b></div>`).join('');
+  $('explain-limits').textContent=evidence.model_limitations+' Component contributions sum to the total change within rounding; they are not independent causal contributions.';
+ }else{ $('reason-preview').textContent='Explanation not available';$('explanation').textContent='No supported evidence';$('explanation-steps').textContent='';$('evidence-rows').textContent='';$('explain-limits').textContent='';}
+ $('compare').innerHTML=`<div class="small">Authored movement score: <b>${fmt(observedScore)}</b></div><div class="small">Best available tested path: <b>${fmt(best)}</b> (${safe(r.optimal_action==='observed'?'Authored movement':r.options.find(x=>x.action===r.optimal_action).label)})</div><div class="small">Exploratory counterfactual gap: <b>${fmt(Math.max(0,observedScore-best))}</b></div><div class="small" style="margin-top:8px">All displayed scores are model indices, not empirically calibrated probabilities.</div>`;
+}
+async function load(){
+ stop();clock=0;
+ try{
+   if(!scenarios.length){
+     const response=await fetch('/api/scenarios');if(!response.ok)throw Error('Scenario list '+response.status);
+     scenarios=await response.json();
+     $('scene').innerHTML=scenarios.map(s=>`<option value="${safe(s.id)}">${safe(s.minute)} · ${safe(s.title)}</option>`).join('');
+   }
+   const scene=scenarios.find(s=>s.id===$('scene').value);
+   if(!scene)throw Error('Missing scene');
+   focusedDefender=scene.default_defender_id;
+   fillDefenders(scene);await loadDefender();
+ }catch(e){$('error').textContent='Cannot load: '+e;$('error').style.display='block'}
+}
+function fillDefenders(scene){
+ $('defender').innerHTML=scene.selectable_defenders.map(p=>`<option value="${safe(p.id)}">#${p.number} · ${safe(p.name)}</option>`).join('');
+ $('defender').value=focusedDefender;
+}
+function chooseDefender(id){
+ if(!data||!data.selectable_defenders.some(p=>p.id===id)||id===focusedDefender)return;
+ focusedDefender=id;$('defender').value=id;loadDefender();
+}
+async function loadDefender(){
+ stop();clock=0;selected='observed';
+ const generation=++loadGeneration;const sceneId=$('scene').value;
+ try{
+   const res=await fetch(`/api/player-analysis/${encodeURIComponent(sceneId)}/${encodeURIComponent(focusedDefender)}`);
+   if(!res.ok)throw Error('API '+res.status);
+   const result=await res.json();if(generation!==loadGeneration)return;
+   data=result;render();$('error').style.display='none';
+ }catch(e){if(generation!==loadGeneration)return;$('error').textContent='Cannot load defender analysis: '+e;$('error').style.display='block'}
+}
+$('ai-generate').onclick=async()=>{
+ if(!data)return;
+ const key=[data.scene.id,focusedDefender,phase,view,selected].join('|');
+ $('ai-generate').disabled=true;$('ai-result').textContent='Preparing grounded commentary…';
+ try{
+  const response=await fetch(`/api/commentary/${encodeURIComponent(data.scene.id)}/${encodeURIComponent(focusedDefender)}`,{
+   method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phase,action:selected,audience:view})});
+  if(!response.ok)throw Error(`HTTP ${response.status}`);
+  const result=await response.json();
+  if(key!==[data.scene.id,focusedDefender,phase,view,selected].join('|'))return;
+  aiReply=result;aiKey=key;render();
+  $('ai-provider').textContent=(result.generated_by_ai?'MICROSOFT FOUNDRY AGENTS · ':'OFFLINE DETERMINISTIC · ')+result.warning;
+ }catch(e){if(key===[data.scene.id,focusedDefender,phase,view,selected].join('|'))$('ai-result').textContent='Commentary unavailable: '+String(e)}
+ finally{$('ai-generate').disabled=false}
+};
+fetch('/api/ai/status').then(r=>r.json()).then(j=>{$('ai-provider').textContent=j.description;}).catch(()=>{$('ai-provider').textContent='Cannot reach AI status endpoint.'});
+$('pre').onclick=()=>setMode('pre');$('post').onclick=()=>setMode('post');$('fan').onclick=()=>setView('fan');$('analyst').onclick=()=>setView('analyst');$('scene').onchange=load;$('defender').onchange=e=>chooseDefender(e.target.value);$('observed-path').onclick=()=>{stop();selected='observed';clock=0;render()};
+$('scrub').oninput=e=>{stop();clock=Number(e.target.value);render()};$('play').onclick=()=>{if(timer){stop();return}let max=Number($('scrub').max);if(clock>=max-.03)clock=0;$('play').textContent='❚❚ Pause';timer=setInterval(()=>{clock=Math.min(max,clock+.025);render();if(clock>=max)stop()},25)};load();
+</script></body></html>

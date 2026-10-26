@@ -1,0 +1,3 @@
+-r requirements.txt
+agent-framework-foundry>=1.0.0
+azure-identity>=1.20

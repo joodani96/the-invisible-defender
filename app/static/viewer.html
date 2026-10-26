@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#06151d" />
+<title>Studio 3D Viewer</title>
+<link rel="stylesheet" href="/static/defender3d.css?v=097" />
+<script defer src="https://cdn.babylonjs.com/babylon.js"></script>
+<script defer src="/static/defender3d_math.js?v=097"></script>
+<script defer src="/static/defender3d_orientation.js?v=097"></script>
+<script defer src="/static/defender3d_decisions.js?v=097"></script>
+<script defer src="/static/defender3d_highlights.js?v=097"></script>
+<script defer src="/static/defender3d_stadium.js?v=0913"></script>
+<script defer src="/static/defender3d.js?v=0913"></script>
+</head>
+<body class="broadcast-mode">
+<div id="app" class="app">
+  <header class="topbar">
+    <a href="/studio" class="brand"><span class="brand-mark">⬡</span><span>THE INVISIBLE <em>DEFENDER</em></span></a>
+    <span class="build-tag">3D DEFENDER POV <span class="status-dot"></span> v0.9.9</span>
+    <a href="/studio" class="back-link">← Studio</a>
+  </header>
+  <section class="heading">
+    <div><p class="eyebrow">TACTICAL REPLAY STUDIO / SYNTHETIC MATCH DATA</p><h1>The decision behind <span>the defense.</span></h1><p class="lede">Select a defender. Rewind the moment. Compare what happened with the best tested alternative — and see why it matters.</p></div>
+    <div class="connection" id="connection">Connecting to analysis engine…</div>
+  </section>
+  <section class="presentation-switch" aria-label="Presentation mode">
+    <div class="presentation-intro"><strong>STUDIO REPLAY</strong><span>Same model. Two ways to understand the decision.</span></div>
+    <div class="presentation-buttons"><button id="broadcast-mode" type="button" class="active" aria-pressed="true">◉ Broadcast <small>Simple story</small></button><button id="analyst-mode" type="button" aria-pressed="false">▦ Analyst <small>Detailed evidence</small></button></div>
+  </section>
+  <section class="toolbar">
+    <label>SCENARIO<select id="scenario" aria-label="Choose scenario"></select></label>
+    <label>FOCUS DEFENDER<select id="defender" aria-label="Choose defender"></select></label>
+    <div class="phase-switch" role="group" aria-label="Decision moment">
+      <button id="phase-pre" class="active" type="button">01 · BEFORE PASS<span>Anticipation & positioning</span></button>
+      <button id="phase-post" type="button">02 · AFTER PASS<span>Reaction & interception</span></button>
+    </div>
+  </section>
+  <main class="workspace">
+    <section class="viewport-shell">
+      <div class="viewport-top"><span class="camera-label"><span class="red-dot"></span> <span id="camera-mode-label">DEFENDER POV</span></span><span id="frame-label">FRAME —</span><span class="pill">SIMULATED, NOT MATCH FOOTAGE</span></div>
+      <div class="viewport" id="viewport">
+        <canvas id="pitch3d" tabindex="0" aria-label="Interactive 3D football pitch"></canvas>
+        <div class="crosshair" id="crosshair">＋</div>
+        <div id="highlight-banner" class="highlight-banner hidden" aria-live="polite"><span id="highlight-kind">TACTICAL HIGHLIGHT</span><strong id="highlight-title">—</strong><p id="highlight-fact"></p></div>
+        <div class="camera-behavior" id="camera-behavior">Fixed pitch view · follows position, not body rotation</div>
+        <div id="render-status" class="render-status">Loading Babylon.js 3D renderer…</div>
+        <div class="viewport-overlay left-hud"><div class="hud-label">FOCUS PLAYER</div><strong id="hud-defender">#—</strong><small id="hud-subtitle">Choose a defender</small></div>
+        <div class="viewport-overlay right-hud"><div class="hud-label">DEFENDING GOAL</div><strong id="hud-goal">→</strong><small id="hud-offside">Offside line —</small></div>
+        <div class="broadcast-scoreboard" aria-label="Model decision comparison"><span class="scoreboard-label">DEFENSIVE DECISION</span><div class="scoreboard-stats"><span>Hold <strong id="broadcast-hold">—</strong></span><span>Selected <strong id="broadcast-selected">—</strong></span><span id="broadcast-impact-label" class="scoreboard-impact">Change <strong id="broadcast-impact">—</strong></span></div><small>Heuristic attacking threat index · lower is better for defense · not xG</small></div>
+        <div class="ground-legend">GROUND TILES · PLAYER FACING = ↑ · Click to simulate · Positions are symbolic; path lengths are to scale</div>
+        <div class="viewport-bottom"><span><i class="legend-dot attacker"></i> Attacking</span><span><i class="legend-dot defender"></i> Defending</span><span><i class="legend-line"></i> Potential pass</span><span><i class="legend-line offside"></i> Offside reference</span></div>
+      </div>
+      <div class="playback">
+        <div class="playback-header"><div><small>TIME-ALIGNED MATCH REPLAY</small><strong id="playback-time">0.00 s</strong></div><div class="playback-buttons"><button id="freeze" type="button" title="Pause at the pass release">◉ Freeze at kick</button><button id="reset" type="button" title="Reset">↺ Reset</button><button id="play" type="button" class="primary">▶ Play</button></div></div>
+        <input type="range" min="0" max="1" step="0.01" value="0" id="timeline" aria-label="Replay timeline" />
+        <div class="playback-footer"><span id="playback-description">Preparing sequence…</span><span id="playback-duration">—</span></div>
+      </div>
+    </section>
+    <aside class="analysis-panel">
+      <section class="studio-story panel-section" aria-live="polite"><p class="eyebrow">THE DECISION, EXPLAINED</p><h2 id="studio-headline">What did the defender do?</h2><p class="studio-summary" id="studio-summary">Choose a scene and a defender to explore the decision.</p><div class="studio-compare"><button id="watch-authored" type="button" class="on">▶ Original movement</button><button id="watch-best" type="button">✦ Best tested</button></div><div class="studio-footnote" id="studio-footnote">The model is an estimate, not a player rating.</div></section>
+      <section class="decision-pad-section panel-section" aria-label="Nine candidate defender movements">
+        <div class="decision-pad-title"><div><p class="eyebrow">01 / NINE POSSIBLE MOVES</p><h2>Where should the defender move?</h2></div><span class="pad-note">PLAYER-RELATIVE</span></div>
+        <p class="pad-intro">All directions are relative to the defender’s body at the decision instant. Select a tile here or on the pitch. Each box shows the Python model's attacking threat index; <strong>lower is better</strong> for defense. The camera remains steady.</p>
+        <div id="move-pad" class="move-pad" role="group" aria-label="Select one of nine defensive movements"></div>
+        <div class="move-pad-legend"><span><i class="legend-swatch selected"></i> Selected</span><span><i class="legend-swatch optimal"></i> Lowest of nine</span><span><i class="legend-swatch worse"></i> Higher threat than hold</span></div>
+        <p id="move-pad-result" class="move-pad-result" aria-live="polite">Select a movement to compare its impact.</p>
+      </section>
+      <div class="panel-section"><p class="eyebrow">02 / CAMERA</p><h2>Camera angle</h2><div class="camera-selector" role="group" aria-label="Camera mode"><button data-camera="pov" class="active">Defender POV</button><button data-camera="follow">Behind defender</button><button data-camera="tactical">Tactical view</button><button data-camera="broadcast">Broadcast side</button></div><p class="note">Body facing is synthetic and explicitly authored for each player; movement direction is derived separately from the trajectory. Defender POV follows the simulated body direction, not recorded eye tracking.</p><div class="orientation-readout"><div><small>BODY FACING</small><strong id="facing-value">—</strong></div><div><small>TRAVEL HEADING</small><strong id="motion-value">—</strong></div></div></div>
+      <div class="panel-section highlight-controls"><p class="eyebrow">03 / EVIDENCE-DRIVEN OVERLAYS</p><h2>Visual explanations</h2>
+        <div class="overlay-toggles"><label><input type="checkbox" id="show-highlights" checked/> Show overlays</label><label><input type="checkbox" id="follow-commentary"/> Auto-follow evidence</label><label><input type="checkbox" id="show-nine-paths"/> Show exact reachable paths</label></div>
+        <label class="comparison-label">MOVEMENT COMPARISON<select id="movement-compare"><option value="both">Original + best tested</option><option value="actual">Original only</option><option value="best">Best tested only</option><option value="none">Hide comparison</option></select></label>
+        <div class="evidence-buttons" id="evidence-buttons" aria-label="Select tactical evidence"></div>
+        <p class="note" id="evidence-help">Highlights are mapped from evidence IDs and calculated trajectories, never inferred from AI wording.</p>
+        <div class="commentary-tools"><button id="generate-3d-commentary" type="button">✦ Generate Foundry commentary</button><span class="provider-label" id="3d-provider">Ready for AI commentary</span></div>
+        <p id="commentary-excerpt" class="commentary-excerpt" aria-live="polite">Evidence-led highlights are ready. Generate grounded AI commentary when you want a narrated explanation.</p><details class="commentary-details"><summary>Read full commentary and caveats</summary><p id="3d-commentary" class="generated-commentary">Select an evidence point or generate an optional AI explanation.</p></details></div>
+      <div class="technical-inspector">
+      <div class="panel-section"><p class="eyebrow">04 / ALTERNATIVE MOVEMENTS</p><h2>What should the defender do?</h2><button id="observed" class="observed active" type="button"><span>Authored movement</span><strong id="observed-score">—</strong></button><div class="moves" id="moves"></div><div class="index-row"><span>Selected threat index</span><strong id="score">—</strong></div><div class="index-row"><span>Best tested alternative</span><strong id="best">—</strong></div><p class="note">Lower threat index is better for defense. This is not xG or a validated success probability.</p></div>
+      <div class="panel-section"><p class="eyebrow">04 / WHAT YOU'RE SEEING</p><h2 id="event-title">Decision timeline</h2><p id="event-explanation" class="description">—</p><div class="info-pairs"><div><span>PASS RELEASE</span><strong id="kick-time">—</strong></div><div><span>INTERCEPTION</span><strong id="contact-time">—</strong></div><div><span>OFFSIDE LINE</span><strong id="line-x">—</strong></div><div><span>DECISION PHASE</span><strong id="phase-name">—</strong></div></div></div>
+      <div class="panel-section last"><p class="eyebrow">05 / EXPLAINABLE DECISIONS</p><h2>Why this outcome?</h2><p id="story" class="description">Choose a scene to see the deterministic analysis.</p><a id="analysis-link" href="/studio">Open full 2D analysis and Foundry commentary ↗</a></div>
+      </div>
+      <button class="show-technical" id="show-technical" type="button">Explore all movement options <span>↗</span></button>
+    </aside>
+  </main>
+  <footer>Babylon.js highlighted replay · All player trajectories and threat indices originate from the v0.8 Python hybrid engine. The 3D player figures and viewing direction are illustrative. </footer>
+</div>
+</body>
+</html>

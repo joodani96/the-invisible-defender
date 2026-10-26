@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="theme-color" content="#37003c"/>
+<link rel="icon" type="image/svg+xml" href="/static/shield.svg"/>
+<title>The Invisible Defender | Tactical Replay Studio</title>
+<link rel="stylesheet" href="/static/studio.css?v=0916"/>
+<script defer src="/static/defender3d_math.js?v=0916"></script>
+<script defer src="/static/defender3d_decisions.js?v=0916"></script>
+<script defer src="/static/defender3d_orientation.js?v=0916"></script>
+<script defer src="/static/studio_core.js?v=0916"></script>
+<script defer src="/static/studio.js?v=0916"></script>
+</head>
+<body>
+<header class="site-header"><div class="shell header-flex">
+ <a class="mark" href="/studio" aria-label="The Invisible Defender home"><img src="/static/shield.svg" alt="" width="34" height="34"/></a>
+ <div class="brand"><strong>THE INVISIBLE DEFENDER</strong><small>AI-powered football decisions · Tactical replay</small></div>
+ <nav class="header-right" aria-label="Main navigation"><a class="header-link" href="/about">About the project</a></nav>
+</div></header>
+<main class="shell">
+ <section class="intro"><div><span class="overline">DEFENSIVE INTELLIGENCE / MATCH MOMENT STUDIO</span><h1>See the movement. <em>Understand the decision.</em></h1><p>One situation, two synchronized perspectives, and nine testable decisions. Every number comes from the same football model.</p></div><div id="connection" class="connection" role="status" aria-live="polite" hidden></div></section>
+ <section class="controls card" aria-label="Choose your analysis"><div class="filters"><label>SCENARIO<select id="scenario" aria-label="Scenario"></select></label><label>FOCUS DEFENDER<select id="defender" aria-label="Focus defender"></select></label></div>
+ <div class="phase-tabs" role="group" aria-label="When to analyze"><button id="pre" class="phase active" aria-pressed="true"><span class="phase-icon">01</span><span><b>BEFORE THE PASS</b><small>Anticipation & positioning</small></span></button><button id="post" class="phase" aria-pressed="false"><span class="phase-icon">02</span><span><b>AFTER THE PASS</b><small>Reaction & interception</small></span></button></div></section>
+ <section class="stage card" aria-label="3D tactical replay"><div class="section-head"><div><span class="section-index">01 / 3D REPLAY</span><h2>Defender's perspective</h2></div><div class="camera-buttons" role="group" aria-label="Choose camera"><button data-camera="follow" class="selected">Behind defender</button><button data-camera="pov">Defender POV</button><button data-camera="tactical">Tactical view</button><button data-camera="broadcast">Broadcast side</button></div></div><div class="frame"><iframe id="viewer" title="Interactive 3D football replay" src="/static/viewer.html?embedded=1&amp;studio=1" loading="eager" allow="fullscreen"></iframe><div id="three-status" class="three-status">Loading synchronized 3D replay…</div><div class="frame-legend"><span><i class="legend-ball"></i> Simulated footage</span><span id="frame-minute">—</span></div></div>
+ <div class="replay-bar"><div class="replay-actions"><div class="timestamp"><span>SHARED REPLAY TIME</span><strong id="clock">0.00 <small>s</small></strong></div><div class="play-buttons"><button id="reset" title="Restart playback">↺ Restart</button><button id="freeze" title="Jump to pass release">◎ At the kick</button><button id="play" class="play" aria-pressed="false">▶ Play both views</button></div></div><input type="range" id="timeline" min="0" max="1" step="0.01" value="0" aria-label="One timeline for 2D and 3D"/><div class="time-labels"><span>START</span><span id="kick-label">PASS RELEASE</span><span id="end-label">END</span></div><div id="replay-event" class="replay-event" role="status" aria-live="polite">Choose a phase to inspect the replay event.</div></div>
+ </section>
+ <section class="explain-grid"><article class="card two-d"><div class="section-head"><div><span class="section-index">02 / 2D ANALYSIS</span><h2>The same moment from above</h2></div><span class="chip">LIVE SYNC</span></div><div class="pitch-wrap"><svg id="pitch" viewBox="0 0 105 68" role="img" aria-label="Overhead tactical field with defenders, attackers and the moving ball" preserveAspectRatio="xMidYMid meet"></svg></div><div class="key"><span><i class="dot blue"></i> Attack</span><span><i class="dot orange"></i> Defense</span><span><i class="line"></i> Potential pass</span><span><i class="line offside"></i> Offside line</span></div><p class="help">Small arrows show body orientation. Select a defender on the pitch to analyze their decision.</p></article>
+ <article class="card choices"><div class="section-head"><div><span class="section-index">03 / DECISION EXPLORER</span><h2>What should the defender do?</h2></div></div><p class="help choices-intro">Directions follow the player's body, not the screen. A <b>lower attacking threat index</b> means a better defensive outcome in this model.</p><div id="moves" class="move-grid" role="group" aria-label="Nine defender movement options"></div><div class="choice-footer"><button id="authored" class="minor">▶ Original movement</button><div class="metric"><span>HOLD</span><b id="hold-index">—</b></div><div class="metric"><span>SELECTED</span><b id="chosen-index">—</b></div><div class="metric impact"><span>REDUCTION</span><b id="reduction">—</b></div></div><p class="summary-text" id="reason">Choose a movement to explore what changes.</p></article></section>
+ <section class="detail-grid"><article class="card coverage"><div class="section-head"><div><span class="section-index">04 / TACTICAL CONTEXT</span><h2>Team coverage & individual contribution</h2></div></div><p class="help">How much does the selected defender add beyond teammates already protecting the pass? These are heuristic coverage indices, not probabilities.</p><div id="coverage" class="coverage-list">Loading tactical breakdown…</div></article>
+ <article class="card ai"><div class="section-head"><div><span class="section-index">05 / MICROSOFT FOUNDRY</span><h2>AI tactical commentary</h2></div><span class="ai-mark">✦ AI</span></div><p class="help">Explain the selected decision using verified tactical evidence. AI never computes or changes the model's scores.</p><div class="ai-status" id="provider">Checking AI provider…</div><button id="generate" class="generate">✦ Generate tactical commentary</button><div id="commentary" class="commentary" aria-live="polite">Choose a defender and a movement, then generate the tactical explanation.</div><div id="sources" class="sources"></div></article></section>
+</main>
+</body>
+</html>
